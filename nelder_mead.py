@@ -101,11 +101,12 @@ def recover_simplex(simplex: np.ndarray) -> np.ndarray:
     
         
         
-start_point = [1., 1.]
+start_point = [3., 4.]
 X = [1., 1.]
 l = random.randrange(1, 10) / 10.
 r = 0
-epsilon = 1.0e-10
+epsilon = 1.0e-17
+stretch_factor = random.randrange(28, 30) / 10.
 
 max_iter = 1000
 recover_simplex_iterations = 50
@@ -132,7 +133,7 @@ for iteration_index in range(max_iter):
 
     if f(*simplex[0]) <= f(*x_worst):
         if f(*simplex[0] <= f(*simplex[-1])):
-            stretched = centroid + 2. * (simplex[0] - centroid) # растяжение
+            stretched = centroid + stretch_factor * (simplex[0] - centroid) # растяжение
             if f(*stretched) <= f(*simplex[-1]):
                 simplex[0] = stretched
                 r += 2
