@@ -66,10 +66,16 @@ def sort_simplex(simplex: np.ndarray, f: Callable) -> np.ndarray:
     Returns:
         np.ndarray: отсортированный симплекс.
     """
-    sorted_simplex = dict(zip([f(*point) for point in simplex], simplex))
-    sorted_simplex = np.array([point[1] for point in sorted(sorted_simplex.items(), reverse=True)])
-    return sorted_simplex
+    simplex = [(f(*vertice), vertice) for vertice in simplex]
 
+    for current_position in range(len(simplex)):
+        for cmp_index in range(current_position + 1, len(simplex)):
+            if simplex[current_position][0] < simplex[cmp_index][0]:
+                simplex[current_position], simplex[cmp_index] = simplex[cmp_index], simplex[current_position]
+    
+    simplex = np.array([vertice for _, vertice in simplex])
+    return simplex
+    
 
 def accuracy_achived(simplex: np.ndarray, epsilon: float, f: Callable) -> bool:
     """Проверка условия завершения по достижении заданныой точности
@@ -101,11 +107,11 @@ def recover_simplex(simplex: np.ndarray) -> np.ndarray:
     
         
         
-start_point = [3., 4.]
+start_point = [1., 1.]
 X = [1., 1.]
 l = random.randrange(1, 10) / 10.
 r = 0
-epsilon = 1.0e-17
+epsilon = 1.0e-3
 stretch_factor = random.randrange(28, 30) / 10.
 
 max_iter = 1000
